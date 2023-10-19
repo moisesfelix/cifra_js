@@ -212,7 +212,7 @@ function ch(tom, escala_c) {
 }
 
 
-function getAcorde(notas) {
+function getAcorde2(notas) {
     const notaToNome = {
         0: 'C',
         1: 'C#',
@@ -280,6 +280,63 @@ function getAcorde(notas) {
 
     return nomeAcorde;
 }
+function getAcorde(notas) {
+    const notaToNome = [
+        'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'
+    ];
+
+    const nomeToTensao = new Map([
+        ['maj', [0, 4, 7]],
+        ['6b', [0, 4, 7, 8]],
+        ['9', [0, 4, 7, 14]],
+        ['11', [0, 4, 7, 17]],
+        ['7M11', [0, 4, 7, 11, 17]],
+        ['13', [0, 4, 7, 21]],
+        ['6', [0, 4, 7, 9]],
+        ['m', [0, 3, 7]],
+        ['aug', [0, 4, 8]],
+        ['7', [0, 4, 7, 10]],
+        ['m7', [0, 3, 7, 10]],
+        ['maj7', [0, 4, 7, 11]],
+        ['maj7(9 11, 13)', [0, 4, 7, 11, 14, 17, 21]],
+        ['dim', [0, 3, 6]],
+        ['sus2', [0, 2, 7]],
+        ['sus4', [0, 5, 7]],
+    ]);
+
+    let nomeAcorde = '';
+    let tensaoAcorde = [];
+
+    // Verifica a nota base do acorde
+    const primeiraNota = notas[0];
+    nomeAcorde = notaToNome[primeiraNota];
+
+    // Calcula a tensão do acorde a partir da nota base
+    for (let i = 0; i < notas.length; i++) {
+        const tensao = (notas[i] - primeiraNota + 12) % 12;
+        tensaoAcorde.push(tensao);
+    }
+
+    // Verifica qual o tipo de acorde com base na tensão
+    for (const [nome, tensao] of nomeToTensao) {
+        if (arraysSaoIguais(tensao, tensaoAcorde)) {
+            nomeAcorde += nome;
+            break;
+        }
+    }
+
+    return nomeAcorde;
+}
+
+function arraysSaoIguais(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+
+    return true;
+}
 
 
 function test() {
@@ -324,7 +381,7 @@ document.forms[0].children[2].onclick = e => {
     let div = document.createElement("div")
     div.style = "text-align:center;"
     let a = acordes2([0, 2, 4,
-        //6,
+        6,
         //8, //7
         //10, //9
         //  12  //11
